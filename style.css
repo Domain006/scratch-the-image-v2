@@ -67,14 +67,8 @@ input[type="file"] {
 }
 
 /* Hidden image preview */
-#hiddenImage {
-  display: none; /* invisible, still used for loading dimensions */
-}
-
-
-/* Wrapper for scratch canvas for vertical and horizontal centering */
 #scratchWrapper {
-  position: relative;
+  position: relative;        /* wrapper is relative for absolute positioning inside */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -82,14 +76,19 @@ input[type="file"] {
   height: 80vh;
 }
 
+#hiddenImage {
+  display: none;             /* keep image hidden */
+}
+
 #scratchCanvas {
-  position: absolute;
+  position: absolute;        /* take canvas out of flow */
   top: 0;
   left: 0;
-  width: 100%;
-  height: auto;
-  z-index: 10; /* above the image */
+  width: 100%;               /* stretch to wrapper */
+  height: 100%;              /* fill wrapper height */
+  z-index: 10;               /* above hidden image */
 }
+
 
 
 /* Link dialog */
