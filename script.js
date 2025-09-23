@@ -11,7 +11,7 @@ const generatedLinkInput = document.getElementById("generatedLink");
 const copyBtn = document.getElementById("copyLinkBtn");
 const viewBtn = document.getElementById("viewLinkBtn");
 
-const imgbbApiKey = "fd2bf32aa543cd678d7e51ad5121774c"; // replace with your actual key
+const imgbbApiKey = "fd2bf32aa543cd678d7e51ad5121774c";
 
 let isDrawing = false;
 let shareLink = "";
@@ -19,7 +19,7 @@ let shareLink = "";
 // Load shared image if ?img=
 const params = new URLSearchParams(window.location.search);
 const sharedImg = params.get("img");
-if (sharedImg) loadImage(sharedImg, {showScratch: true});
+if (sharedImg) loadImage(sharedImg, { showScratch: true });
 
 // Upload image to ImgBB
 upload.addEventListener("change", (e) => {
@@ -36,34 +36,32 @@ upload.addEventListener("change", (e) => {
     method: "POST",
     body: formData
   })
-  .then(res => res.json())
-  .then(data => {
-    if (!data.success) {
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) {
+        loading.style.display = "none";
+        alert("Upload failed!");
+        return;
+      }
+
+      const url = data.data.display_url; 
+      shareLink = `${window.location.origin}${window.location.pathname}?img=${encodeURIComponent(url)}`;
+
       loading.style.display = "none";
+      generatedLinkInput.value = shareLink;
+      linkDialog.style.display = "block";
+
+      loadImage(url, { showScratch: true });
+    })
+    .catch(err => {
+      loading.style.display = "none";
+      console.error("Upload error:", err);
       alert("Upload failed!");
-      return;
-    }
-
-    const url = data.data.display_url; // short ImgBB URL
-    shareLink = `${window.location.origin}${window.location.pathname}?img=${encodeURIComponent(url)}`;
-
-    loading.style.display = "none";
-    generatedLinkInput.value = shareLink;
-    linkDialog.style.display = "block";
-
-    // Load image for scratch only if CORS allows
-    loadImage(url, {showScratch: true});
-  })
-  .catch(err => {
-    loading.style.display = "none";
-    console.error("Upload error:", err);
-    alert("Upload failed!");
-  });
+    });
 });
 
-// Load image into scratch canvas
-function loadImage(url, opts = {showScratch: false}) {
-  // show loading overlay while the image downloads
+// Load image into scratch canvas with auto scale & center
+function loadImage(url, opts = { showScratch: false }) {
   loading.style.display = "flex";
   loadingText.textContent = "Loading image...";
 
@@ -71,11 +69,21 @@ function loadImage(url, opts = {showScratch: false}) {
   hiddenImage.src = url;
 
   hiddenImage.onload = () => {
-    // hide loading and initialize canvas
     loading.style.display = "none";
 
-    canvas.width = hiddenImage.width;
-    canvas.height = hiddenImage.height;
+    // Calculate scale to fit viewport while keeping aspect ratio
+    const maxWidth = window.innerWidth * 0.95;
+    const maxHeight = window.innerHeight * 0.8;
+    const scale = Math.min(maxWidth / hiddenImage.width, maxHeight / hiddenImage.height);
+
+    canvas.width = hiddenImage.width * scale;
+    canvas.height = hiddenImage.height * scale;
+
+    // Center canvas horizontally and vertically
+    canvas.style.display = "block";
+    canvas.style.margin = "auto";
+    canvas.style.position = "relative";
+    canvas.style.top = `${(window.innerHeight - canvas.height) / 2}px`;
 
     if (opts.showScratch) {
       ctx.globalCompositeOperation = "source-over";
@@ -98,15 +106,6 @@ canvas.addEventListener("mousemove", scratch);
 canvas.addEventListener("touchstart", () => (isDrawing = true));
 canvas.addEventListener("touchend", () => (isDrawing = false));
 canvas.addEventListener("touchmove", scratch);
-
-// Fit canvas to viewport
-const maxWidth = window.innerWidth * 0.95;
-const maxHeight = window.innerHeight * 0.8;
-let scale = Math.min(maxWidth / img.width, maxHeight / img.height);
-
-canvas.width = img.width * scale;
-canvas.height = img.height * scale;
-
 
 function scratch(e) {
   if (!isDrawing) return;
@@ -137,31 +136,25 @@ copyBtn.addEventListener("click", () => {
 });
 
 viewBtn.addEventListener("click", () => {
-  // prefer the current generated link input value (user may have pasted their own)
   const val = generatedLinkInput.value || shareLink;
   if (!val) return;
 
-  // If the value contains ?img= use that param; otherwise treat as direct image URL
   try {
     const u = new URL(val, window.location.origin);
     const imgParam = u.searchParams.get('img');
     if (imgParam) {
-      // decode and load in-page with scratch enabled
       const decoded = decodeURIComponent(imgParam);
-      shareLink = val; // set current share link
-      loadImage(decoded, {showScratch: true});
-      // show the dialog still
+      shareLink = val;
+      loadImage(decoded, { showScratch: true });
       linkDialog.style.display = 'block';
       return;
     }
-    // not a ?img= link — attempt to load the raw URL
     shareLink = val;
-    loadImage(val, {showScratch: true});
+    loadImage(val, { showScratch: true });
     linkDialog.style.display = 'block';
   } catch (err) {
-    // If URL parsing fails, try to load as-is
     shareLink = val;
-    loadImage(val, {showScratch: true});
+    loadImage(val, { showScratch: true });
     linkDialog.style.display = 'block';
   }
 });
