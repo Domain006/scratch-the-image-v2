@@ -82,8 +82,7 @@ function loadImage(url, opts = { showScratch: false }) {
     // Center canvas horizontally and vertically
     canvas.style.display = "block";
     canvas.style.margin = "auto";
-    canvas.style.position = "relative";
-    canvas.style.top = `${(window.innerHeight - canvas.height) / 2}px`;
+
 
     if (opts.showScratch) {
       ctx.globalCompositeOperation = "source-over";
