@@ -99,6 +99,15 @@ canvas.addEventListener("touchstart", () => (isDrawing = true));
 canvas.addEventListener("touchend", () => (isDrawing = false));
 canvas.addEventListener("touchmove", scratch);
 
+// Fit canvas to viewport
+const maxWidth = window.innerWidth * 0.95;
+const maxHeight = window.innerHeight * 0.8;
+let scale = Math.min(maxWidth / img.width, maxHeight / img.height);
+
+canvas.width = img.width * scale;
+canvas.height = img.height * scale;
+
+
 function scratch(e) {
   if (!isDrawing) return;
 
