@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Scratch & Share Image</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>🎉 Scratch the Image 🎉</h1>
+  <p>Upload an image to generate a shareable scratch link.</p>
+
+  <div class="container">
+    <input type="file" id="upload" accept="image/*">
+
+    <!-- Loading spinner -->
+    <div id="loading" role="status" aria-live="polite" style="display:none;">
+      <div class="spinner" aria-hidden="true"></div>
+      <p id="loadingText">Uploading image...</p>
+    </div>
+
+    <!-- Share link dialog (shown after upload) -->
+    <div id="linkDialog" class="card" style="display:none;">
+      <p class="muted">Shareable link generated</p>
+      <input type="text" id="generatedLink" readonly>
+      <div class="row">
+        <button id="copyLinkBtn">📋 Copy Share Link</button>
+        <button id="viewLinkBtn">🔗 View Link</button>
+      </div>
+    </div>
+
+    <!-- Scratch container (only visible when visiting ?img= ) -->
+    <div id="scratchWrapper" class="image-box" style="display:none;">
+      <img id="hiddenImage" src="" alt="hidden image">
+      <canvas id="scratchCanvas"></canvas>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
