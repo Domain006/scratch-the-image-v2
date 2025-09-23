@@ -1,33 +1,27 @@
-/* General body and font */
 body {
   font-family: Arial, sans-serif;
   text-align: center;
   background: #f0f0f0;
   margin: 0;
   padding: 20px;
-  overflow-x: hidden;
 }
 
-/* App title */
 #appTitle {
   margin: 0 auto 6px auto;
 }
 
-/* Main container */
 .container {
   max-width: 900px;
   margin: 0 auto;
   padding: 10px;
 }
 
-/* File input */
 input[type="file"] {
   width: 90%;
   max-width: 420px;
   margin-top: 8px;
 }
 
-/* Card style */
 .card {
   margin: 14px auto;
   background: #fff;
@@ -41,13 +35,11 @@ input[type="file"] {
   box-sizing: border-box;
 }
 
-/* Muted text */
 .muted {
   color: #666;
   margin: 0 0 8px 0;
 }
 
-/* Row for buttons */
 .row {
   display: flex;
   gap: 8px;
@@ -55,7 +47,6 @@ input[type="file"] {
   margin-top: 10px;
 }
 
-/* Image container */
 .image-box {
   position: relative;
   display: inline-block;
@@ -66,7 +57,6 @@ input[type="file"] {
   border-radius: 6px;
 }
 
-/* Hidden image preview */
 #hiddenImage {
   max-width: 100%;
   height: auto;
@@ -74,25 +64,14 @@ input[type="file"] {
   border-radius: 4px;
 }
 
-/* Wrapper for scratch canvas for vertical and horizontal centering */
-#scratchWrapper {
-  display: flex;
-  justify-content: center; /* horizontal center */
-  align-items: center;     /* vertical center */
-  height: 80vh;            /* or 100vh for full screen */
-  width: 100%;
-}
-
-/* Scratch canvas */
 #scratchCanvas {
-  width: 100%;
-  height: auto;
-  max-width: 95vw;
-  max-height: 80vh;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  position: absolute;
+  top: 10px; /* account for padding in image-box */
+  left: 10px;
+  cursor: crosshair;
+  touch-action: none; /* prevent browser gestures while drawing */
 }
 
-/* Link dialog */
 #linkDialog {
   margin-top: 20px;
   background: white;
@@ -105,7 +84,6 @@ input[type="file"] {
   box-sizing: border-box;
 }
 
-/* Generated link input */
 #generatedLink {
   width: 100%;
   padding: 8px;
@@ -113,7 +91,6 @@ input[type="file"] {
   font-size: 14px;
 }
 
-/* Buttons */
 button {
   margin: 5px;
   padding: 10px 16px;
@@ -121,7 +98,7 @@ button {
   cursor: pointer;
 }
 
-/* Full-screen loading overlay */
+/* Full-screen loading cover (dark) */
 #loading {
   position: fixed;
   top: 0;
@@ -139,7 +116,6 @@ button {
   box-sizing: border-box;
 }
 
-/* Spinner */
 .spinner {
   border: 6px solid rgba(255,255,255,0.2);
   border-top: 6px solid #fff;
@@ -150,20 +126,17 @@ button {
   margin-bottom: 15px;
 }
 
-/* Loading text */
 #loading p, #loading #loadingText {
   color: #fff;
   margin: 0;
   font-size: 16px;
 }
 
-/* Spinner animation */
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-/* Responsive adjustments */
 @media (max-width: 480px) {
   #linkDialog {
     padding: 12px;
