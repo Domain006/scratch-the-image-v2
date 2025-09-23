@@ -65,12 +65,13 @@ input[type="file"] {
 }
 
 #scratchCanvas {
-  position: absolute;
-  top: 10px; /* account for padding in image-box */
-  left: 10px;
-  cursor: crosshair;
-  touch-action: none; /* prevent browser gestures while drawing */
+  max-width: 95vw;   /* 95% of viewport width */
+  max-height: 80vh;  /* 80% of viewport height */
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  display: block;
+  margin: 20px auto; /* ← this centers the canvas horizontally */
 }
+
 
 #linkDialog {
   margin-top: 20px;
