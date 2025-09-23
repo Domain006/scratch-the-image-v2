@@ -1,33 +1,27 @@
-/* General body and font */
 body {
   font-family: Arial, sans-serif;
   text-align: center;
   background: #f0f0f0;
   margin: 0;
   padding: 20px;
-  overflow-x: hidden;
 }
 
-/* App title */
 #appTitle {
   margin: 0 auto 6px auto;
 }
 
-/* Main container */
 .container {
   max-width: 900px;
   margin: 0 auto;
   padding: 10px;
 }
 
-/* File input */
 input[type="file"] {
   width: 90%;
   max-width: 420px;
   margin-top: 8px;
 }
 
-/* Card style */
 .card {
   margin: 14px auto;
   background: #fff;
@@ -41,13 +35,11 @@ input[type="file"] {
   box-sizing: border-box;
 }
 
-/* Muted text */
 .muted {
   color: #666;
   margin: 0 0 8px 0;
 }
 
-/* Row for buttons */
 .row {
   display: flex;
   gap: 8px;
@@ -55,7 +47,6 @@ input[type="file"] {
   margin-top: 10px;
 }
 
-/* Image container */
 .image-box {
   position: relative;
   display: inline-block;
@@ -64,34 +55,25 @@ input[type="file"] {
   padding: 10px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.06);
   border-radius: 6px;
-}
+  overflow: hidden; /* ensure overlay/canvas cannot escape the image box */
 
-/* Hidden image preview */
-#scratchWrapper {
-  position: relative;        /* wrapper is relative for absolute positioning inside */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 80vh;
 }
 
 #hiddenImage {
-  display: none;             /* keep image hidden */
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
 }
 
 #scratchCanvas {
-  position: absolute;        /* take canvas out of flow */
-  top: 0;
-  left: 0;
-  width: 100%;               /* stretch to wrapper */
-  height: 100%;              /* fill wrapper height */
-  z-index: 10;               /* above hidden image */
+  position: absolute;
+  top: 10px; /* account for padding in image-box */
+  left: 10px;
+  cursor: crosshair;
+  touch-action: none; /* prevent browser gestures while drawing */
 }
 
-
-
-/* Link dialog */
 #linkDialog {
   margin-top: 20px;
   background: white;
@@ -104,7 +86,6 @@ input[type="file"] {
   box-sizing: border-box;
 }
 
-/* Generated link input */
 #generatedLink {
   width: 100%;
   padding: 8px;
@@ -112,7 +93,6 @@ input[type="file"] {
   font-size: 14px;
 }
 
-/* Buttons */
 button {
   margin: 5px;
   padding: 10px 16px;
@@ -120,7 +100,7 @@ button {
   cursor: pointer;
 }
 
-/* Full-screen loading overlay */
+/* Full-screen loading cover (dark) */
 #loading {
   position: fixed;
   top: 0;
@@ -138,7 +118,6 @@ button {
   box-sizing: border-box;
 }
 
-/* Spinner */
 .spinner {
   border: 6px solid rgba(255,255,255,0.2);
   border-top: 6px solid #fff;
@@ -149,20 +128,17 @@ button {
   margin-bottom: 15px;
 }
 
-/* Loading text */
 #loading p, #loading #loadingText {
   color: #fff;
   margin: 0;
   font-size: 16px;
 }
 
-/* Spinner animation */
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-/* Responsive adjustments */
 @media (max-width: 480px) {
   #linkDialog {
     padding: 12px;
@@ -175,4 +151,3 @@ button {
     font-size: 13px;
   }
 }
-
