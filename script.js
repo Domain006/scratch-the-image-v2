@@ -64,14 +64,13 @@ upload.addEventListener("change", (e) => {
 function loadImage(url, opts = { showScratch: false }) {
   loading.style.display = "flex";
   loadingText.textContent = "Loading image...";
-
   scratchWrapper.style.display = "none";
   hiddenImage.src = url;
 
   hiddenImage.onload = () => {
     loading.style.display = "none";
 
-    // Calculate scale to fit viewport while keeping aspect ratio
+    // Calculate scale to fit viewport
     const maxWidth = window.innerWidth * 0.95;
     const maxHeight = window.innerHeight * 0.8;
     const scale = Math.min(maxWidth / hiddenImage.width, maxHeight / hiddenImage.height);
@@ -79,18 +78,33 @@ function loadImage(url, opts = { showScratch: false }) {
     canvas.width = hiddenImage.width * scale;
     canvas.height = hiddenImage.height * scale;
 
-    // Center canvas horizontally and vertically
-    canvas.style.display = "block";
-    canvas.style.margin = "auto";
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // Draw image onto canvas
+    ctx.globalCompositeOperation = "source-over";
+    ctx.drawImage(hiddenImage, 0, 0, canvas.width, canvas.height);
 
     if (opts.showScratch) {
-      ctx.globalCompositeOperation = "source-over";
+      // Overlay black cover
       ctx.fillStyle = "black";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      scratchWrapper.style.display = "inline-block";
+
+      // Show scratch wrapper
+      scratchWrapper.style.display = "flex";
+
+      // Center canvas inside wrapper
+      canvas.style.position = "relative";
+      canvas.style.margin = "auto";
     }
   };
+
+  hiddenImage.onerror = () => {
+    loading.style.display = "none";
+    alert("Failed to load image. The URL may be invalid or blocked by CORS.");
+  };
+}
+
 
   hiddenImage.onerror = () => {
     loading.style.display = "none";
