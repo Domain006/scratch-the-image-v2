@@ -16,6 +16,7 @@ const imgbbApiKey = "fd2bf32aa543cd678d7e51ad5121774c"; // replace with your key
 
 let isDrawing = false;
 let shareLink = "";
+let expirationTimer = null;
 
 // Load shared image if ?img=
 const params = new URLSearchParams(window.location.search);
@@ -45,7 +46,6 @@ upload.addEventListener("change", (e) => {
         return;
       }
 
-      // Use the expiring direct image URL
       const imgUrl = data.data.url;
       shareLink = `${window.location.origin}${window.location.pathname}?img=${encodeURIComponent(imgUrl)}`;
 
@@ -54,24 +54,34 @@ upload.addEventListener("change", (e) => {
       linkDialog.style.display = "block";
 
       // Show expiration info
-      if (expiration) {
-        let text = "";
-        switch(expiration) {
-          case "60": text = "Expires in 1 minute"; break;
-          case "300": text = "Expires in 5 minutes"; break;
-          case "1800": text = "Expires in 30 minutes"; break;
-          case "3600": text = "Expires in 1 hour"; break;
-          case "21600": text = "Expires in 6 hours"; break;
-          case "43200": text = "Expires in 12 hours"; break;
-          case "86400": text = "Expires in 24 hours"; break;
-          default: text = `Expires in ${expiration} seconds`; break;
-        }
-        expirationInfo.textContent = text;
-      } else {
-        expirationInfo.textContent = "No expiration";
+      let expireText = "No expiration";
+      let expireSeconds = parseInt(expiration) || 0;
+      switch(expiration) {
+        case "60": expireText = "Expires in 1 minute"; break;
+        case "300": expireText = "Expires in 5 minutes"; break;
+        case "1800": expireText = "Expires in 30 minutes"; break;
+        case "3600": expireText = "Expires in 1 hour"; break;
+        case "21600": expireText = "Expires in 6 hours"; break;
+        case "43200": expireText = "Expires in 12 hours"; break;
+        case "86400": expireText = "Expires in 24 hours"; break;
       }
+      expirationInfo.textContent = expireText;
 
+      // Load scratch image
       loadImage(imgUrl, {showScratch: true});
+
+      // Clear previous timer
+      if (expirationTimer) clearTimeout(expirationTimer);
+
+      // Start front-end expiration timer if set
+      if (expireSeconds > 0) {
+        expirationTimer = setTimeout(() => {
+          // Hide scratch area and show expired message
+          scratchWrapper.style.display = "none";
+          expirationInfo.textContent = "This image has expired.";
+          alert("The image has expired and is no longer viewable.");
+        }, expireSeconds * 1000);
+      }
     })
     .catch(err => {
       loading.style.display = "none";
@@ -102,7 +112,7 @@ function loadImage(url, opts = {showScratch: false}) {
 
   hiddenImage.onerror = () => {
     loading.style.display = "none";
-    alert('Failed to load image. The URL may be invalid or blocked by CORS or expired.');
+    alert('Failed to load image. The URL may be invalid, blocked by CORS, or expired.');
   };
 }
 
