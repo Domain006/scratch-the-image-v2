@@ -8,10 +8,11 @@ const ctx = canvas.getContext("2d");
 
 const linkDialog = document.getElementById("linkDialog");
 const generatedLinkInput = document.getElementById("generatedLink");
+const expirationInfo = document.getElementById("expirationInfo");
 const copyBtn = document.getElementById("copyLinkBtn");
 const viewBtn = document.getElementById("viewLinkBtn");
 
-const imgbbApiKey = "fd2bf32aa543cd678d7e51ad5121774c"; // replace with your actual key
+const imgbbApiKey = "fd2bf32aa543cd678d7e51ad5121774c"; // replace with your key
 
 let isDrawing = false;
 let shareLink = "";
@@ -29,51 +30,63 @@ upload.addEventListener("change", (e) => {
   loading.style.display = "flex";
   loadingText.textContent = "Uploading image...";
 
+  const expiration = document.getElementById("expiration").value; // in seconds
   const formData = new FormData();
   formData.append("image", file);
 
-  fetch(`https://api.imgbb.com/1/upload?key=${imgbbApiKey}`, {
-    method: "POST",
-    body: formData
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (!data.success) {
+  const url = `https://api.imgbb.com/1/upload?key=${imgbbApiKey}` + (expiration ? `&expiration=${expiration}` : "");
+
+  fetch(url, { method: "POST", body: formData })
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) {
+        loading.style.display = "none";
+        alert("Upload failed!");
+        return;
+      }
+
+      const imgUrl = data.data.display_url;
+      shareLink = `${window.location.origin}${window.location.pathname}?img=${encodeURIComponent(imgUrl)}`;
+
       loading.style.display = "none";
+      generatedLinkInput.value = shareLink;
+      linkDialog.style.display = "block";
+
+      // Show expiration info
+      if (expiration) {
+        let text = "";
+        switch(expiration) {
+          case "300": text = "Expires in 5 minutes"; break;
+          case "1800": text = "Expires in 30 minutes"; break;
+          case "3600": text = "Expires in 1 hour"; break;
+          case "21600": text = "Expires in 6 hours"; break;
+          case "43200": text = "Expires in 12 hours"; break;
+          case "86400": text = "Expires in 24 hours"; break;
+          default: text = `Expires in ${expiration} seconds`; break;
+        }
+        expirationInfo.textContent = text;
+      } else {
+        expirationInfo.textContent = "No expiration";
+      }
+
+      loadImage(imgUrl, {showScratch: true});
+    })
+    .catch(err => {
+      loading.style.display = "none";
+      console.error("Upload error:", err);
       alert("Upload failed!");
-      return;
-    }
-
-    const url = data.data.display_url; // short ImgBB URL
-    shareLink = `${window.location.origin}${window.location.pathname}?img=${encodeURIComponent(url)}`;
-
-    loading.style.display = "none";
-    generatedLinkInput.value = shareLink;
-    linkDialog.style.display = "block";
-
-    // Load image for scratch only if CORS allows
-    loadImage(url, {showScratch: true});
-  })
-  .catch(err => {
-    loading.style.display = "none";
-    console.error("Upload error:", err);
-    alert("Upload failed!");
-  });
+    });
 });
 
 // Load image into scratch canvas
 function loadImage(url, opts = {showScratch: false}) {
-  // show loading overlay while the image downloads
   loading.style.display = "flex";
   loadingText.textContent = "Loading image...";
-
   scratchWrapper.style.display = "none";
   hiddenImage.src = url;
 
   hiddenImage.onload = () => {
-    // hide loading and initialize canvas
     loading.style.display = "none";
-
     canvas.width = hiddenImage.width;
     canvas.height = hiddenImage.height;
 
@@ -101,7 +114,6 @@ canvas.addEventListener("touchmove", scratch);
 
 function scratch(e) {
   if (!isDrawing) return;
-
   const rect = canvas.getBoundingClientRect();
   let x, y;
 
@@ -128,29 +140,22 @@ copyBtn.addEventListener("click", () => {
 });
 
 viewBtn.addEventListener("click", () => {
-  // prefer the current generated link input value (user may have pasted their own)
   const val = generatedLinkInput.value || shareLink;
   if (!val) return;
 
-  // If the value contains ?img= use that param; otherwise treat as direct image URL
   try {
     const u = new URL(val, window.location.origin);
     const imgParam = u.searchParams.get('img');
     if (imgParam) {
-      // decode and load in-page with scratch enabled
-      const decoded = decodeURIComponent(imgParam);
-      shareLink = val; // set current share link
-      loadImage(decoded, {showScratch: true});
-      // show the dialog still
+      shareLink = val;
+      loadImage(decodeURIComponent(imgParam), {showScratch: true});
       linkDialog.style.display = 'block';
       return;
     }
-    // not a ?img= link — attempt to load the raw URL
     shareLink = val;
     loadImage(val, {showScratch: true});
     linkDialog.style.display = 'block';
   } catch (err) {
-    // If URL parsing fails, try to load as-is
     shareLink = val;
     loadImage(val, {showScratch: true});
     linkDialog.style.display = 'block';
