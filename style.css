@@ -22,6 +22,30 @@ input[type="file"] {
   margin-top: 8px;
 }
 
+.expiration-container {
+  margin-top: 12px;
+  margin-bottom: 12px;
+  text-align: left;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.expiration-container label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.expiration-container select {
+  width: 100%;
+  padding: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+
+
 .card {
   margin: 14px auto;
   background: #fff;
@@ -126,16 +150,6 @@ button {
   animation: spin 1s linear infinite;
   margin-bottom: 15px;
 }
-#statcounter-wrapper {
-  position: fixed;
-  top: 10px;
-  right: 10px;
-  z-index: 9999; /* stays above everything */
-  background: rgba(255, 255, 255, 0.8); /* optional background */
-  padding: 5px; /* optional padding */
-  border-radius: 8px; /* optional rounded corners */
-}
-
 
 #loading p, #loading #loadingText {
   color: #fff;
