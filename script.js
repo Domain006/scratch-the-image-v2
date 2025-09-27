@@ -45,7 +45,8 @@ upload.addEventListener("change", (e) => {
         return;
       }
 
-      const imgUrl = data.data.display_url;
+      // Use the expiring direct image URL
+      const imgUrl = data.data.url;
       shareLink = `${window.location.origin}${window.location.pathname}?img=${encodeURIComponent(imgUrl)}`;
 
       loading.style.display = "none";
@@ -56,6 +57,7 @@ upload.addEventListener("change", (e) => {
       if (expiration) {
         let text = "";
         switch(expiration) {
+          case "60": text = "Expires in 1 minute"; break;
           case "300": text = "Expires in 5 minutes"; break;
           case "1800": text = "Expires in 30 minutes"; break;
           case "3600": text = "Expires in 1 hour"; break;
@@ -100,7 +102,7 @@ function loadImage(url, opts = {showScratch: false}) {
 
   hiddenImage.onerror = () => {
     loading.style.display = "none";
-    alert('Failed to load image. The URL may be invalid or blocked by CORS.');
+    alert('Failed to load image. The URL may be invalid or blocked by CORS or expired.');
   };
 }
 
