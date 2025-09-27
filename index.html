@@ -12,14 +12,12 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-5GXKV1VQ59');
   </script>
 
   <link rel="stylesheet" href="style.css">
 
   <style>
-    /* Position Statcounter at top-right */
     .statcounter-container {
       position: fixed;
       top: 10px;
@@ -38,6 +36,24 @@
   <div class="container">
     <input type="file" id="upload" accept="image/*">
 
+    <!-- Expiration dropdown -->
+    <div class="expiration-container">
+      <label for="expiration">Expiration (optional):</label>
+      <select id="expiration">
+      <option value="300" selected>5 minutes</option> <!-- default selected -->
+      <option value="1800">30 minutes</option>
+      <option value="3600">1 hour</option>
+      <option value="21600">6 hours</option>
+      <option value="43200">12 hours</option>
+      <option value="86400">24 hours</option>
+      <option value="">No expiration</option>
+      </select>
+
+      <p class="muted">
+        Enable this if you want to force uploads to be auto deleted after a certain time (in seconds 60-15552000)
+      </p>
+    </div>
+
     <!-- Loading spinner -->
     <div id="loading" role="status" aria-live="polite" style="display:none;">
       <div class="spinner" aria-hidden="true"></div>
@@ -48,6 +64,7 @@
     <div id="linkDialog" class="card" style="display:none;">
       <p class="muted">Shareable link generated</p>
       <input type="text" id="generatedLink" readonly>
+      <p id="expirationInfo" class="muted"></p>
       <div class="row">
         <button id="copyLinkBtn">📋 Copy Share Link</button>
         <button id="viewLinkBtn">🔗 View Link</button>
@@ -63,7 +80,6 @@
 
   <script src="script.js"></script>
 
-  <!-- Default Statcounter code for ScratchMe Website -->
   <div class="statcounter-container">
     <script type="text/javascript">
       var sc_project=13169601; 
@@ -84,6 +100,5 @@
       </div>
     </noscript>
   </div>
-  <!-- End of Statcounter Code -->
 </body>
 </html>
